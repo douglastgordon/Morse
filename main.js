@@ -1,3 +1,5 @@
+// constants
+
 const morseEnglishDictionary = {
    "-----":"0",
    ".----":"1",
@@ -50,6 +52,9 @@ const englishMorseDictionary = (() => {
 const SINGLE_SPACE = " ";
 const DOUBLE_SPACE = "  ";
 
+// meat and potatoes
+
+
 const morseToEnglish = morseString => {
   const words = morseString.split(DOUBLE_SPACE);
   return words.map(word => {
@@ -68,8 +73,46 @@ const englishToMorse = englishString => {
   }).join(DOUBLE_SPACE);
 };
 
+// dom interaction
+// const pushTime = event => {
+//   if (event.code === "Space") timing.push((new Date()).getTime());
+//   console.log(timing)
+// };
+
+const durations = []
+let lastDownTime = null
+
+document.addEventListener("keydown", (event) => {
+  if (event.code === "Space" && !lastDownTime) {
+    console.log("keydown")
+    lastDownTime = (new Date()).getTime();
+  }
+});
+
+document.addEventListener("keyup", (event) => {
+  if (event.code === "Space") {
+    const upTime = (new Date()).getTime();
+    const pressDuration = upTime - lastDownTime;
+    durations.push(pressDuration);
+    lastDownTime = null;
+    console.log(parseDurations(durations))
+
+  }
+});
+
+const parseDuration = duration => {
+  if (duration < 160) {
+    return ".";
+  }
+  return "-";
+};
+
+const parseDurations = durations => durations.map(parseDuration);
+
+
 
 // tests
+
 const morse = ".... .- .-.. .--. -·-·--  -- --- .-. ... .  -.-. --- -.. .  .. ...  -.. .-. .. ...- .. -. --.  -- .  -. ..- - ... -·-·--";
 const english = "Halp! Morse code is driving me nuts!";
 
