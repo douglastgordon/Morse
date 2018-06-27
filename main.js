@@ -49,8 +49,14 @@ const englishMorseDictionary = (() => {
   }, {});
 })();
 
+const NO_SPACE = "";
 const SINGLE_SPACE = " ";
 const DOUBLE_SPACE = "  ";
+const DIT = ".";
+const DAH = "-";
+
+const ON = "ON";
+const OFF = "OFF";
 
 // meat and potatoes
 
@@ -59,14 +65,14 @@ const morseToEnglish = morseString => {
   const words = morseString.split(DOUBLE_SPACE);
   return words.map(word => {
     const characters = word.split(SINGLE_SPACE);
-    return characters.map(character => morseEnglishDictionary[character]).join("");
+    return characters.map(character => morseEnglishDictionary[character]).join(NO_SPACE);
   }).join(SINGLE_SPACE);
 };
 
 const englishToMorse = englishString => {
   const words = englishString.split(SINGLE_SPACE);
   return words.map(word => {
-    const characters = word.split("");
+    const characters = word.split(NO_SPACE);
     return characters.map(character => {
       return englishMorseDictionary[character.toLowerCase()]
     }).join(SINGLE_SPACE);
@@ -81,33 +87,42 @@ const englishToMorse = englishString => {
 
 const durations = []
 let lastDownTime = null
+let lastUpTime = (new Date()).getTime()
 
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space" && !lastDownTime) {
-    console.log("keydown")
     lastDownTime = (new Date()).getTime();
+    durations.push([OFF, lastDownTime - lastUpTime])
   }
 });
 
 document.addEventListener("keyup", (event) => {
   if (event.code === "Space") {
-    const upTime = (new Date()).getTime();
-    const pressDuration = upTime - lastDownTime;
-    durations.push(pressDuration);
+    lastUpTime = (new Date()).getTime();
+    const pressDuration = lastUpTime - lastDownTime;
+    durations.push([ON, pressDuration]);
     lastDownTime = null;
+    console.log(durations)
     console.log(parseDurations(durations))
-
   }
 });
 
 const parseDuration = duration => {
-  if (duration < 160) {
-    return ".";
+  const [type, length] = duration;
+  if (type === ON) {
+    if (length < 160) return DIT;
+    return DAH;
+  } else if (type === OFF) {
+    if (length < 200) {
+      return NO_SPACE;
+    } else if (length < 500) {
+      return SINGLE_SPACE;
+    }
+    return DOUBLE_SPACE;
   }
-  return "-";
 };
 
-const parseDurations = durations => durations.map(parseDuration);
+const parseDurations = durations => durations.map(parseDuration).join("");
 
 
 
