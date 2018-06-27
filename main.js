@@ -1,4 +1,4 @@
-const  alphabet = {  
+const alphabet = {
    "-----":"0",
    ".----":"1",
    "..---":"2",
@@ -40,3 +40,18 @@ const  alphabet = {
    "·-·-·-":".",
    "--··--":","
 };
+
+
+const morseToEnglish = morseString => {
+  return ""
+};
+
+const testMorseToEnglish = () => {
+  const morse = ".... .- .-.. .--. -·-·--  -- --- .-. ... .  -.-. --- -.. .  .. ...  -.. .-. .. ...- .. -. --.  -- .  -. ..- - ... -·-·--";
+  const english = "Halp! Morse code is driving me nuts!";
+  const functionWorks = morseToEnglish(morse) === english;
+  console.log("morseToEnglish passes test cases:", functionWorks);
+  return functionWorks;
+};
+
+testMorseToEnglish();
