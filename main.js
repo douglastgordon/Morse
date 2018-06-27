@@ -43,13 +43,17 @@ const alphabet = {
 
 
 const morseToEnglish = morseString => {
-  return ""
+  const words = morseString.split("  ");
+  return words.map(word => {
+    const characters = word.split(" ");
+    return characters.map(character => alphabet[character]).join("");
+  }).join(" ");
 };
 
 const testMorseToEnglish = () => {
   const morse = ".... .- .-.. .--. -·-·--  -- --- .-. ... .  -.-. --- -.. .  .. ...  -.. .-. .. ...- .. -. --.  -- .  -. ..- - ... -·-·--";
   const english = "Halp! Morse code is driving me nuts!";
-  const functionWorks = morseToEnglish(morse) === english;
+  const functionWorks = morseToEnglish(morse) === english.toLowerCase();
   console.log("morseToEnglish passes test cases:", functionWorks);
   return functionWorks;
 };
