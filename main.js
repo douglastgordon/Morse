@@ -58,6 +58,8 @@ const DAH = "-";
 const ON = "ON";
 const OFF = "OFF";
 
+const TIME_UNIT = 250 //ms
+
 // meat and potatoes
 
 
@@ -91,6 +93,7 @@ let lastUpTime = (new Date()).getTime()
 
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space" && !lastDownTime) {
+    playSound()
     lastDownTime = (new Date()).getTime();
     durations.push([OFF, lastDownTime - lastUpTime])
   }
@@ -98,33 +101,50 @@ document.addEventListener("keydown", (event) => {
 
 document.addEventListener("keyup", (event) => {
   if (event.code === "Space") {
+    stopSound()
     lastUpTime = (new Date()).getTime();
     const pressDuration = lastUpTime - lastDownTime;
     durations.push([ON, pressDuration]);
     lastDownTime = null;
-    console.log(durations)
-    console.log(parseDurations(durations))
+    textNode.innerHTML = parseDurations()
   }
 });
 
 const parseDuration = duration => {
   const [type, length] = duration;
   if (type === ON) {
-    if (length < 160) return DIT;
+    if (length < TIME_UNIT) return DIT;
     return DAH;
   } else if (type === OFF) {
-    if (length < 200) {
+    if (length < TIME_UNIT) {
       return NO_SPACE;
-    } else if (length < 500) {
+    } else if (length < TIME_UNIT * 3) {
       return SINGLE_SPACE;
     }
     return DOUBLE_SPACE;
   }
 };
 
-const parseDurations = durations => durations.map(parseDuration).join("");
+const parseDurations = () => morseToEnglish(durations.map(parseDuration).join(""));
 
+const textNode = document.getElementById("text");
 
+// sound
+const playSound = () => {
+  gain.gain.exponentialRampToValueAtTime(1, audioContext.currentTime + 0.02)
+}
+const stopSound = () => {
+  gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.04)
+}
+
+const audioContext = new AudioContext();
+const oscillator = audioContext.createOscillator();
+const gain = audioContext.createGain();
+oscillator.connect(gain);
+gain.connect(audioContext.destination);
+oscillator.type = "triangle";
+oscillator.start(0)
+stopSound()
 
 // tests
 
