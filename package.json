@@ -1,0 +1,29 @@
+{
+  "name": "Morse",
+  "version": "1.0.0",
+  "description": "For Morse code strings, characters are separated single spaces and words are separated by double spaces.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/douglastgordon/Morse.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/douglastgordon/Morse/issues"
+  },
+  "homepage": "https://github.com/douglastgordon/Morse#readme",
+  "dependencies": {
+    "path": "^0.12.7",
+    "socket.io": "^2.1.1",
+    "webpack": "^4.12.2"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}

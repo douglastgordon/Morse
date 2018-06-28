@@ -82,10 +82,6 @@ const englishToMorse = englishString => {
 };
 
 // dom interaction
-// const pushTime = event => {
-//   if (event.code === "Space") timing.push((new Date()).getTime());
-//   console.log(timing)
-// };
 
 const durations = []
 let lastDownTime = null
@@ -145,6 +141,10 @@ gain.connect(audioContext.destination);
 oscillator.type = "triangle";
 oscillator.start(0)
 stopSound()
+
+
+// socket shit
+const socket = io();
 
 // tests
 
