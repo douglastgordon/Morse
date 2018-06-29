@@ -1,4 +1,9 @@
-#text {
+body {
+  background-color: black;
+}
+
+p {
   font-size: 24px;
   font-family: courier;
+  color: white;
 }

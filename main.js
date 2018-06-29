@@ -37,9 +37,10 @@ const morseEnglishDictionary = {
    "-..-":"x",
    "-.--":"y",
    "--..":"z",
-   "-·-·--":"!",
-   "·-·-·-":".",
-   "--··--":","
+   "-.-.--":"!",
+   ".-.-.-":".",
+   "--..--":",",
+   "..--..":"?",
 };
 
 const englishMorseDictionary = (() => {
@@ -59,12 +60,23 @@ const ON = "ON";
 const OFF = "OFF";
 
 const TIME_UNIT = 250 //ms
-
+const userId = Math.floor((Math.random() * 1000000))
 
 // socket shit
 const socket = io();
-socket.on("morse message", (msg) => {
-  textNode.innerHTML = parseDurations(msg)
+socket.on("morse message", (msg, id) => {
+  console.log("foreign message", userId !== id)
+  if (userId !== id) {
+    const foreignUserTextNode = document.getElementById(id);
+    if (foreignUserTextNode) {
+      foreignUserTextNode.innerHTML = parseDurations(msg);
+    } else {
+      const newForeignUserTextNode = document.createElement("p");
+      newForeignUserTextNode.id = id;
+      newForeignUserTextNode.innerHTML = parseDurations(msg);
+      main.appendChild(newForeignUserTextNode);
+    }
+  }
 });
 
 // meat and potatoes
@@ -107,7 +119,8 @@ document.addEventListener("keyup", (event) => {
     const pressDuration = lastUpTime - lastDownTime;
     durations.push([ON, pressDuration]);
     lastDownTime = null;
-    socket.emit("morse message", durations)
+    socket.emit("morse message", durations, userId)
+    textNode.innerHTML = parseDurations(durations)
   }
 });
 
@@ -128,7 +141,10 @@ const parseDuration = duration => {
 
 const parseDurations = durations => morseToEnglish(durations.map(parseDuration).join(""));
 
-const textNode = document.getElementById("text");
+const main = document.getElementById("main");
+const textNode = document.createElement("p");
+textNode.id = userId;
+main.appendChild(textNode);
 
 // sound
 const playSound = () => {
