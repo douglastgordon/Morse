@@ -1,16 +1,6 @@
 // constants
 
 const morseEnglishDictionary = {
-   "-----":"0",
-   ".----":"1",
-   "..---":"2",
-   "...--":"3",
-   "....-":"4",
-   ".....":"5",
-   "-....":"6",
-   "--...":"7",
-   "---..":"8",
-   "----.":"9",
    ".-":"a",
    "-...":"b",
    "-.-.":"c",
@@ -41,6 +31,16 @@ const morseEnglishDictionary = {
    ".-.-.-":".",
    "--..--":",",
    "..--..":"?",
+   "-----":"0",
+   ".----":"1",
+   "..---":"2",
+   "...--":"3",
+   "....-":"4",
+   ".....":"5",
+   "-....":"6",
+   "--...":"7",
+   "---..":"8",
+   "----.":"9",
 };
 
 const englishMorseDictionary = (() => {
@@ -60,6 +60,7 @@ const ON = "ON";
 const OFF = "OFF";
 
 const TIME_UNIT = 250 //ms
+const TOLERANCE = 1.2 //20%
 const userId = Math.floor((Math.random() * 1000000))
 
 // socket shit
@@ -143,17 +144,54 @@ const makeMessageArea = (id, name="") => {
 
 const addMessage = (messageArea, message) => {
   messageArea.querySelector(".message").innerHTML = message;
-}
+};
+
+// guide
+
+const makeGuide = () => {
+  const guideList = document.getElementById("guide-list");
+
+  Object.entries(englishMorseDictionary).forEach(entry => {
+    const [englishChar, morse] = entry;
+    if (!englishChar.match(/[a-z]/i)) return;
+    const listItemNode = document.createElement("li");
+    const englishCharNode = document.createElement("p");
+    englishCharNode.classList.add("english-char");
+    englishCharNode.innerHTML = englishChar;
+    listItemNode.appendChild(englishCharNode);
+    const morseNode = document.createElement("p");
+    morseNode.classList.add("morse");
+
+    morse.split("").forEach(ditDah => {
+      const ditDahNode = document.createElement("div");
+      ditDahNode.classList.add(ditDah === DIT ? "dit" : "dah");
+      morseNode.appendChild(ditDahNode);
+    });
+    listItemNode.appendChild(morseNode);
+    guideList.appendChild(listItemNode);
+  })
+};
+
+makeGuide()
+{/* <li>
+  <p class="english-char">a</p>
+  <p class="morse">
+    <div class="dot"></div>
+    <div class="dah"></div>
+  </p>
+</li> */}
+
+// parse business
 
 const parseDuration = duration => {
   const [type, length] = duration;
   if (type === ON) {
-    if (length < TIME_UNIT) return DIT;
+    if (length < TIME_UNIT * TOLERANCE) return DIT;
     return DAH;
   } else if (type === OFF) {
-    if (length < TIME_UNIT) {
+    if (length < TIME_UNIT * TOLERANCE) {
       return NO_SPACE;
-    } else if (length < TIME_UNIT * 3) {
+    } else if (length < TIME_UNIT * TOLERANCE * 3) {
       return SINGLE_SPACE;
     }
     return DOUBLE_SPACE;

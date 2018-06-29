@@ -18,3 +18,46 @@ p {
   font-size: 12px;
   margin-bottom: 5px;
 }
+
+ul {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  position: absolute;
+  bottom: 100px;
+  width: 750px;
+  height: 260px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+li {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.english-char {
+  margin-right: 20px;
+}
+
+.morse {
+  display: flex;
+  flex-direction: row;
+}
+
+.dit, .dah {
+  height: 10px;
+  background-color: white;
+  margin-top: 3px;
+  margin-right: 5px;
+}
+
+.dit {
+  width: 10px;
+  border-radius: 50%;
+}
+
+.dah {
+  width: 30px;
+}
