@@ -60,9 +60,14 @@ const OFF = "OFF";
 
 const TIME_UNIT = 250 //ms
 
+
+// socket shit
+const socket = io();
+socket.on("morse message", (msg) => {
+  textNode.innerHTML = parseDurations(msg)
+});
+
 // meat and potatoes
-
-
 const morseToEnglish = morseString => {
   const words = morseString.split(DOUBLE_SPACE);
   return words.map(word => {
@@ -102,7 +107,7 @@ document.addEventListener("keyup", (event) => {
     const pressDuration = lastUpTime - lastDownTime;
     durations.push([ON, pressDuration]);
     lastDownTime = null;
-    textNode.innerHTML = parseDurations()
+    socket.emit("morse message", durations)
   }
 });
 
@@ -121,7 +126,7 @@ const parseDuration = duration => {
   }
 };
 
-const parseDurations = () => morseToEnglish(durations.map(parseDuration).join(""));
+const parseDurations = durations => morseToEnglish(durations.map(parseDuration).join(""));
 
 const textNode = document.getElementById("text");
 
@@ -143,8 +148,6 @@ oscillator.start(0)
 stopSound()
 
 
-// socket shit
-const socket = io();
 
 // tests
 
