@@ -1,9 +1,20 @@
 body {
   background-color: black;
+  margin: 50px;
+}
+
+article {
+  margin-bottom: 15px;
 }
 
 p {
+  margin: 0;
   font-size: 24px;
   font-family: courier;
   color: white;
+}
+
+.name {
+  font-size: 12px;
+  margin-bottom: 5px;
 }

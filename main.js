@@ -67,14 +67,12 @@ const socket = io();
 socket.on("morse message", (msg, id) => {
   console.log("foreign message", userId !== id)
   if (userId !== id) {
-    const foreignUserTextNode = document.getElementById(id);
-    if (foreignUserTextNode) {
-      foreignUserTextNode.innerHTML = parseDurations(msg);
+    const foreignUserMessageAreaNode = document.getElementById(id);
+    if (foreignUserMessageAreaNode) {
+      addMessage(foreignUserMessageAreaNode, parseDurations(msg));
     } else {
-      const newForeignUserTextNode = document.createElement("p");
-      newForeignUserTextNode.id = id;
-      newForeignUserTextNode.innerHTML = parseDurations(msg);
-      main.appendChild(newForeignUserTextNode);
+      const newForeignUserTextNode = makeMessageArea(id);
+      addMessage(newForeignUserTextNode, parseDurations(msg));
     }
   }
 });
@@ -120,9 +118,32 @@ document.addEventListener("keyup", (event) => {
     durations.push([ON, pressDuration]);
     lastDownTime = null;
     socket.emit("morse message", durations, userId)
-    textNode.innerHTML = parseDurations(durations)
+
+    addMessage(myMessageArea, parseDurations(durations))
+    myMessageArea.querySelector(".message").innerHTML = parseDurations(durations)
   }
 });
+
+const makeMessageArea = (id, name="") => {
+  const messageArea = document.createElement("article");
+  messageArea.id = id;
+
+  const nameNode= document.createElement("p");
+  nameNode.classList.add("name");
+  nameNode.innerHTML = name || `user ${id}`;
+
+  const message = document.createElement("p");
+  message.classList.add("message");
+
+  messageArea.appendChild(nameNode);
+  messageArea.appendChild(message);
+  main.appendChild(messageArea);
+  return messageArea;
+};
+
+const addMessage = (messageArea, message) => {
+  messageArea.querySelector(".message").innerHTML = message;
+}
 
 const parseDuration = duration => {
   const [type, length] = duration;
@@ -142,9 +163,7 @@ const parseDuration = duration => {
 const parseDurations = durations => morseToEnglish(durations.map(parseDuration).join(""));
 
 const main = document.getElementById("main");
-const textNode = document.createElement("p");
-textNode.id = userId;
-main.appendChild(textNode);
+const myMessageArea = makeMessageArea(userId, "you");
 
 // sound
 const playSound = () => {
