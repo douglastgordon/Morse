@@ -172,14 +172,7 @@ const makeGuide = () => {
   })
 };
 
-makeGuide()
-{/* <li>
-  <p class="english-char">a</p>
-  <p class="morse">
-    <div class="dot"></div>
-    <div class="dah"></div>
-  </p>
-</li> */}
+makeGuide();
 
 // parse business
 
