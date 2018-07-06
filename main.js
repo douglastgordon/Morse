@@ -63,18 +63,38 @@ const TIME_UNIT = 250 //ms
 const TOLERANCE = 1.2 //20%
 const userId = Math.floor((Math.random() * 1000000))
 
+const ALL_MESSAGES = {
+  [userId]: [],
+}
+
+const receiveMessage = (message, id) => {
+  if (!ALL_MESSAGES[id]) ALL_MESSAGES[id] = [];
+  ALL_MESSAGES[id].push(message);
+};
+
+const updateMessage = id => {
+  const foreignUserMessageAreaNode = document.getElementById(id);
+  if (foreignUserMessageAreaNode) {
+    addMessageNode(foreignUserMessageAreaNode, parseDurations(ALL_MESSAGES[id]));
+  } else {
+    const newForeignUserTextNode = makeMessageArea(id);
+    addMessageNode(newForeignUserTextNode, parseDurations(ALL_MESSAGES[id]));
+  }
+};
+
+const insertMessage = message => {
+  ALL_MESSAGES[userId].push(message);
+  socket.emit("morse message", message, userId);
+};
+
+
 // socket shit
 const socket = io();
-socket.on("morse message", (msg, id) => {
+socket.on("morse message", (message, id) => {
   console.log("foreign message", userId !== id)
   if (userId !== id) {
-    const foreignUserMessageAreaNode = document.getElementById(id);
-    if (foreignUserMessageAreaNode) {
-      addMessage(foreignUserMessageAreaNode, parseDurations(msg));
-    } else {
-      const newForeignUserTextNode = makeMessageArea(id);
-      addMessage(newForeignUserTextNode, parseDurations(msg));
-    }
+    receiveMessage(message, id);
+    updateMessage(id);
   }
 });
 
@@ -99,7 +119,6 @@ const englishToMorse = englishString => {
 
 // dom interaction
 
-const durations = []
 let lastDownTime = null
 let lastUpTime = (new Date()).getTime()
 
@@ -107,7 +126,7 @@ document.addEventListener("keydown", (event) => {
   if (event.code === "Space" && !lastDownTime) {
     playSound()
     lastDownTime = (new Date()).getTime();
-    durations.push([OFF, lastDownTime - lastUpTime])
+    insertMessage([OFF, lastDownTime - lastUpTime], userId)
   }
 });
 
@@ -116,12 +135,10 @@ document.addEventListener("keyup", (event) => {
     stopSound()
     lastUpTime = (new Date()).getTime();
     const pressDuration = lastUpTime - lastDownTime;
-    durations.push([ON, pressDuration]);
+    insertMessage([ON, pressDuration], userId)
     lastDownTime = null;
-    socket.emit("morse message", durations, userId)
-
-    addMessage(myMessageArea, parseDurations(durations))
-    myMessageArea.querySelector(".message").innerHTML = parseDurations(durations)
+    addMessageNode(myMessageArea, parseDurations(ALL_MESSAGES[userId]))
+    myMessageArea.querySelector(".message").innerHTML = parseDurations(ALL_MESSAGES[userId])
   }
 });
 
@@ -142,7 +159,7 @@ const makeMessageArea = (id, name="") => {
   return messageArea;
 };
 
-const addMessage = (messageArea, message) => {
+const addMessageNode = (messageArea, message) => {
   messageArea.querySelector(".message").innerHTML = message;
 };
 
