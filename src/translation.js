@@ -58,7 +58,7 @@ const TOLERANCE = 1.2; //20%
 export const ON = "ON";
 export const OFF = "OFF";
 
-const morseToEnglish = morseString => {
+export const morseToEnglish = morseString => {
   const words = morseString.split(DOUBLE_SPACE);
   return words.map(word => {
     const characters = word.split(SINGLE_SPACE);
@@ -66,7 +66,7 @@ const morseToEnglish = morseString => {
   }).join(SINGLE_SPACE);
 };
 
-const englishToMorse = englishString => {
+export const englishToMorse = englishString => {
   const words = englishString.split(SINGLE_SPACE);
   return words.map(word => {
     const characters = word.split(NO_SPACE);

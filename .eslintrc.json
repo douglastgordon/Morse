@@ -1,0 +1,50 @@
+{
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "no-console": [
+          1,
+          { "allow": ["warn", "error"] }
+        ],
+        "no-unused-vars": [
+          1,
+          { "argsIgnorePattern": "(state|dispatch|res)"}
+        ],
+        "no-case-declarations": 1,
+        "no-empty": 0,
+        "indent": [
+            "warn",
+            2,
+            {"SwitchCase": 1}
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "semi": [
+            "off",
+            "never"
+        ]
+    },
+    "globals": {
+      "window": true,
+      "document": true,
+      "setTimeout": true,
+      "setInterval": true,
+      "module": true,
+      "__dirname": true,
+      "require": true,
+      "Worker": true,
+      "onmessage": true,
+      "postMessage": true,
+      "console": true,
+      "io": true,
+      "process": true,
+      "AudioContext": true
+    }
+}

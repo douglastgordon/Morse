@@ -1,12 +1,8 @@
-import { morseEnglishDictionary, englishMorseDictionary, parseDurations, DIT, ON, OFF } from "./src/translation"
+import { parseDurations, ON, OFF } from "./translation";
+import { playSound, stopSound } from "./sound";
+import makeGuide from "./guide"
 
-// constants
-
-
-
-
-
-
+makeGuide()
 const userId = Math.floor((Math.random() * 1000000))
 
 const ALL_MESSAGES = {
@@ -37,7 +33,6 @@ const insertMessage = message => {
 // socket shit
 const socket = io();
 socket.on("morse message", (message, id) => {
-  console.log("foreign message", userId !== id)
   if (userId !== id) {
     receiveMessage(message, id);
     updateMessage(id);
@@ -91,75 +86,5 @@ const addMessageNode = (messageArea, message) => {
   messageArea.querySelector(".message").innerHTML = message;
 };
 
-// guide
-
-const makeGuide = () => {
-  const guideList = document.getElementById("guide-list");
-
-  Object.entries(englishMorseDictionary).forEach(entry => {
-    const [englishChar, morse] = entry;
-    if (!englishChar.match(/[a-z]/i)) return;
-    const listItemNode = document.createElement("li");
-    const englishCharNode = document.createElement("p");
-    englishCharNode.classList.add("english-char");
-    englishCharNode.innerHTML = englishChar;
-    listItemNode.appendChild(englishCharNode);
-    const morseNode = document.createElement("p");
-    morseNode.classList.add("morse");
-
-    morse.split("").forEach(ditDah => {
-      const ditDahNode = document.createElement("div");
-      ditDahNode.classList.add(ditDah === DIT ? "dit" : "dah");
-      morseNode.appendChild(ditDahNode);
-    });
-    listItemNode.appendChild(morseNode);
-    guideList.appendChild(listItemNode);
-  })
-};
-
-makeGuide();
-
-// parse business
-
-
 const main = document.getElementById("main");
 const myMessageArea = makeMessageArea(userId, "you");
-
-// sound
-const playSound = () => {
-  gain.gain.exponentialRampToValueAtTime(1, audioContext.currentTime + 0.02)
-}
-const stopSound = () => {
-  gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.04)
-}
-
-const audioContext = new AudioContext();
-const oscillator = audioContext.createOscillator();
-const gain = audioContext.createGain();
-oscillator.connect(gain);
-gain.connect(audioContext.destination);
-oscillator.type = "triangle";
-oscillator.start(0)
-stopSound()
-
-
-
-// tests
-
-const morse = ".... .- .-.. .--. -·-·--  -- --- .-. ... .  -.-. --- -.. .  .. ...  -.. .-. .. ...- .. -. --.  -- .  -. ..- - ... -·-·--";
-const english = "Halp! Morse code is driving me nuts!";
-
-const testMorseToEnglish = () => {
-  const functionWorks = morseToEnglish(morse) === english.toLowerCase();
-  console.log("morseToEnglish passes test cases:", functionWorks);
-  return functionWorks;
-};
-
-const testEnglishToMorse = () => {
-  const functionWorks = englishToMorse(english) === morse;
-  console.log("testEnglishToMorse passes test cases:", functionWorks);
-  return functionWorks;
-};
-
-testMorseToEnglish();
-testEnglishToMorse();

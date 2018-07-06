@@ -7,13 +7,10 @@ const messageName = "morse message"
 app.use("/", express.static(__dirname));
 
 io.on("connection", (socket) => {
-  // console.log("user connected")
   socket.on(messageName, (msg, userId) => {
-    console.log(msg)
     io.emit(messageName, msg, userId)
   });
   socket.on('disconnect', () => {
-    // console.log("user disconnected");
   });
 })
 
