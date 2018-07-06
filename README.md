@@ -1,7 +1,9 @@
 TODO
-[] Morse code guide
+[x] Morse code guide
 [] how to use guide
-[] basic styling
+[x] basic styling
 [] private convos
-[] distinct users
+[x] distinct users
 [] structure code
+[] mobile styling
+[] refactor message parsing
