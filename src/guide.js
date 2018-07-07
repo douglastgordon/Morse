@@ -1,4 +1,4 @@
-import { englishMorseDictionary, DIT } from "src/translation"
+import { englishMorseDictionary, DIT } from "./translation"
 
 const makeGuide = () => {
   const guideList = document.getElementById("guide-list");

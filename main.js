@@ -1,6 +1,6 @@
-import { parseDurations, ON, OFF } from "./translation";
-import { playSound, stopSound } from "./sound";
-import makeGuide from "./guide"
+import { parseDurations, ON, OFF } from "./src/translation";
+import { playSound, stopSound } from "./src/sound";
+import makeGuide from "./src/guide"
 
 makeGuide()
 const userId = Math.floor((Math.random() * 1000000))

@@ -80,14 +80,14 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-!(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-!(function webpackMissingModule() { var e = new Error("Cannot find module \"./sound\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-!(function webpackMissingModule() { var e = new Error("Cannot find module \"./guide\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+/* harmony import */ var _src_translation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/translation */ "./src/translation.js");
+/* harmony import */ var _src_sound__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./src/sound */ "./src/sound.js");
+/* harmony import */ var _src_guide__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./src/guide */ "./src/guide.js");
 
 
 
 
-!(function webpackMissingModule() { var e = new Error("Cannot find module \"./guide\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())()
+Object(_src_guide__WEBPACK_IMPORTED_MODULE_2__["default"])()
 const userId = Math.floor((Math.random() * 1000000))
 
 const ALL_MESSAGES = {
@@ -102,10 +102,10 @@ const receiveMessage = (message, id) => {
 const updateMessage = id => {
   const foreignUserMessageAreaNode = document.getElementById(id);
   if (foreignUserMessageAreaNode) {
-    addMessageNode(foreignUserMessageAreaNode, !(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())(ALL_MESSAGES[id]));
+    addMessageNode(foreignUserMessageAreaNode, Object(_src_translation__WEBPACK_IMPORTED_MODULE_0__["parseDurations"])(ALL_MESSAGES[id]));
   } else {
     const newForeignUserTextNode = makeMessageArea(id);
-    addMessageNode(newForeignUserTextNode, !(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())(ALL_MESSAGES[id]));
+    addMessageNode(newForeignUserTextNode, Object(_src_translation__WEBPACK_IMPORTED_MODULE_0__["parseDurations"])(ALL_MESSAGES[id]));
   }
 };
 
@@ -132,21 +132,21 @@ let lastUpTime = (new Date()).getTime()
 
 document.addEventListener("keydown", (event) => {
   if (event.code === "Space" && !lastDownTime) {
-    !(function webpackMissingModule() { var e = new Error("Cannot find module \"./sound\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())()
+    Object(_src_sound__WEBPACK_IMPORTED_MODULE_1__["playSound"])()
     lastDownTime = (new Date()).getTime();
-    insertMessage([!(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()), lastDownTime - lastUpTime], userId)
+    insertMessage([_src_translation__WEBPACK_IMPORTED_MODULE_0__["OFF"], lastDownTime - lastUpTime], userId)
   }
 });
 
 document.addEventListener("keyup", (event) => {
   if (event.code === "Space") {
-    !(function webpackMissingModule() { var e = new Error("Cannot find module \"./sound\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())()
+    Object(_src_sound__WEBPACK_IMPORTED_MODULE_1__["stopSound"])()
     lastUpTime = (new Date()).getTime();
     const pressDuration = lastUpTime - lastDownTime;
-    insertMessage([!(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()), pressDuration], userId)
+    insertMessage([_src_translation__WEBPACK_IMPORTED_MODULE_0__["ON"], pressDuration], userId)
     lastDownTime = null;
-    addMessageNode(myMessageArea, !(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())(ALL_MESSAGES[userId]))
-    myMessageArea.querySelector(".message").innerHTML = !(function webpackMissingModule() { var e = new Error("Cannot find module \"./translation\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())(ALL_MESSAGES[userId])
+    addMessageNode(myMessageArea, Object(_src_translation__WEBPACK_IMPORTED_MODULE_0__["parseDurations"])(ALL_MESSAGES[userId]))
+    myMessageArea.querySelector(".message").innerHTML = Object(_src_translation__WEBPACK_IMPORTED_MODULE_0__["parseDurations"])(ALL_MESSAGES[userId])
   }
 });
 
@@ -173,6 +173,192 @@ const addMessageNode = (messageArea, message) => {
 
 const main = document.getElementById("main");
 const myMessageArea = makeMessageArea(userId, "you");
+
+
+/***/ }),
+
+/***/ "./src/guide.js":
+/*!**********************!*\
+  !*** ./src/guide.js ***!
+  \**********************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _translation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./translation */ "./src/translation.js");
+
+
+const makeGuide = () => {
+  const guideList = document.getElementById("guide-list");
+
+  Object.entries(_translation__WEBPACK_IMPORTED_MODULE_0__["englishMorseDictionary"]).forEach(entry => {
+    const [englishChar, morse] = entry;
+    if (!englishChar.match(/[a-z]/i)) return;
+    const listItemNode = document.createElement("li");
+    const englishCharNode = document.createElement("p");
+    englishCharNode.classList.add("english-char");
+    englishCharNode.innerHTML = englishChar;
+    listItemNode.appendChild(englishCharNode);
+    const morseNode = document.createElement("p");
+    morseNode.classList.add("morse");
+
+    morse.split("").forEach(ditDah => {
+      const ditDahNode = document.createElement("div");
+      ditDahNode.classList.add(ditDah === _translation__WEBPACK_IMPORTED_MODULE_0__["DIT"] ? "dit" : "dah");
+      morseNode.appendChild(ditDahNode);
+    });
+    listItemNode.appendChild(morseNode);
+    guideList.appendChild(listItemNode);
+  })
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (makeGuide);
+
+
+/***/ }),
+
+/***/ "./src/sound.js":
+/*!**********************!*\
+  !*** ./src/sound.js ***!
+  \**********************/
+/*! exports provided: playSound, stopSound */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "playSound", function() { return playSound; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "stopSound", function() { return stopSound; });
+const playSound = () => {
+  gain.gain.exponentialRampToValueAtTime(1, audioContext.currentTime + 0.02);
+}
+
+const stopSound = () => {
+  gain.gain.exponentialRampToValueAtTime(0.00001, audioContext.currentTime + 0.04);
+}
+
+const audioContext = new AudioContext();
+const oscillator = audioContext.createOscillator();
+const gain = audioContext.createGain();
+oscillator.connect(gain);
+gain.connect(audioContext.destination);
+oscillator.type = "triangle";
+oscillator.start(0);
+stopSound();
+
+
+/***/ }),
+
+/***/ "./src/translation.js":
+/*!****************************!*\
+  !*** ./src/translation.js ***!
+  \****************************/
+/*! exports provided: englishMorseDictionary, DIT, ON, OFF, morseToEnglish, englishToMorse, parseDurations */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "englishMorseDictionary", function() { return englishMorseDictionary; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DIT", function() { return DIT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "ON", function() { return ON; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OFF", function() { return OFF; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "morseToEnglish", function() { return morseToEnglish; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "englishToMorse", function() { return englishToMorse; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "parseDurations", function() { return parseDurations; });
+const morseEnglishDictionary = {
+   ".-":"a",
+   "-...":"b",
+   "-.-.":"c",
+   "-..":"d",
+   ".":"e",
+   "..-.":"f",
+   "--.":"g",
+   "....":"h",
+   "..":"i",
+   ".---":"j",
+   "-.-":"k",
+   ".-..":"l",
+   "--":"m",
+   "-.":"n",
+   "---":"o",
+   ".--.":"p",
+   "--.-":"q",
+   ".-.":"r",
+   "...":"s",
+   "-":"t",
+   "..-":"u",
+   "...-":"v",
+   ".--":"w",
+   "-..-":"x",
+   "-.--":"y",
+   "--..":"z",
+   "-.-.--":"!",
+   ".-.-.-":".",
+   "--..--":",",
+   "..--..":"?",
+   "-----":"0",
+   ".----":"1",
+   "..---":"2",
+   "...--":"3",
+   "....-":"4",
+   ".....":"5",
+   "-....":"6",
+   "--...":"7",
+   "---..":"8",
+   "----.":"9",
+};
+
+const englishMorseDictionary = (() => {
+  return Object.entries(morseEnglishDictionary).reduce((acc, entry) => {
+    const [morseCharacter, englishCharacter] = entry;
+    return Object.assign({}, acc, {[englishCharacter]: morseCharacter});
+  }, {});
+})();
+
+const NO_SPACE = "";
+const SINGLE_SPACE = " ";
+const DOUBLE_SPACE = "  ";
+const DIT = ".";
+const DAH = "-";
+const TIME_UNIT = 250; //ms
+const TOLERANCE = 1.2; //20%
+const ON = "ON";
+const OFF = "OFF";
+
+const morseToEnglish = morseString => {
+  const words = morseString.split(DOUBLE_SPACE);
+  return words.map(word => {
+    const characters = word.split(SINGLE_SPACE);
+    return characters.map(character => morseEnglishDictionary[character]).join(NO_SPACE);
+  }).join(SINGLE_SPACE);
+};
+
+const englishToMorse = englishString => {
+  const words = englishString.split(SINGLE_SPACE);
+  return words.map(word => {
+    const characters = word.split(NO_SPACE);
+    return characters.map(character => {
+      return englishMorseDictionary[character.toLowerCase()]
+    }).join(SINGLE_SPACE);
+  }).join(DOUBLE_SPACE);
+};
+
+const parseDuration = duration => {
+  const [type, length] = duration;
+  if (type === ON) {
+    if (length < TIME_UNIT * TOLERANCE) return DIT;
+    return DAH;
+  } else if (type === OFF) {
+    if (length < TIME_UNIT * TOLERANCE) {
+      return NO_SPACE;
+    } else if (length < TIME_UNIT * TOLERANCE * 3) {
+      return SINGLE_SPACE;
+    }
+    return DOUBLE_SPACE;
+  }
+};
+
+const parseDurations = durations => morseToEnglish(durations.map(parseDuration).join(""));
 
 
 /***/ })
